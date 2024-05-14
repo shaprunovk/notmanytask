@@ -5,7 +5,10 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 
 	"github.com/bigredeye/notmanytask/internal/config"
 	"github.com/bigredeye/notmanytask/internal/database"
@@ -13,11 +16,13 @@ import (
 	"github.com/bigredeye/notmanytask/internal/gitlab"
 	"github.com/bigredeye/notmanytask/internal/scorer"
 	"github.com/bigredeye/notmanytask/internal/tgbot"
+	conf "github.com/bigredeye/notmanytask/pkg/conf"
 	zlog "github.com/bigredeye/notmanytask/pkg/log"
+	"github.com/fsnotify/fsnotify"
 	"github.com/pkg/errors"
 )
 
-func Run() error {
+func RunInternal() error {
 	flag.Parse()
 	config, err := config.ParseConfig()
 	if err != nil {
@@ -99,6 +104,47 @@ func Run() error {
 	}()
 
 	s := newServer(config, logger.Named("server"), db, deadlines, projects, pipelines, scorer, git)
-
 	return errors.Wrap(s.run(), "Server failed")
+}
+
+func Run() {
+
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Fatalf("Error creating watcher: %v", err)
+	}
+	defer watcher.Close()
+
+	go func() {
+		for {
+			select {
+			case event, ok := <-watcher.Events:
+				if !ok {
+					return
+				}
+				if event.Op&fsnotify.Write == fsnotify.Write {
+					log.Println("Config file modified, reloading...")
+					if err != nil {
+						log.Printf("Error reloading config: %v", err)
+					} else {
+						go RunInternal()
+					}
+				}
+			case err, ok := <-watcher.Errors:
+				if !ok {
+					return
+				}
+				log.Printf("Error: %v", err)
+			}
+		}
+	}()
+
+	err = watcher.Add(conf.ConfigPath)
+	if err != nil {
+		log.Fatalf("Error adding file to watcher: %v", err)
+	}
+
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+	<-sigChan
 }

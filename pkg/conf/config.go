@@ -9,10 +9,10 @@ import (
 	"github.com/spf13/viper"
 )
 
-var configPath string
+var ConfigPath string
 
 func init() {
-	flag.StringVar(&configPath, "config", "", "Path to the config")
+	flag.StringVar(&ConfigPath, "config", "", "Path to the config")
 }
 
 type Option interface {
@@ -65,8 +65,8 @@ func ParseConfig(config interface{}, options ...Option) error {
 	}
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
-	if len(configPath) > 0 {
-		viper.SetConfigFile(configPath)
+	if len(ConfigPath) > 0 {
+		viper.SetConfigFile(ConfigPath)
 		if err := viper.ReadInConfig(); err != nil {
 			return errors.Wrap(err, "Failed to load config")
 		}
