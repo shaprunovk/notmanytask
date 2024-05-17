@@ -18,14 +18,14 @@ services:
       - ./crashme/config.yml:/etc/crashme/config.yml
       - ./crashme/submits:/var/run/crashme/submits
     environment:
-      CRASHME_URL: https://cpp-hse.org/api/flag
+      CRASHME_URL: https://localhost/api/flag
       CRASHME_TOKEN: TOKEN
     restart: unless-stopped
 
   db:
     image: postgres:13
     environment:
-      POSTGRES_PASSWORD: {POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: kek
     ports:
       - 5432:5432
     volumes:

@@ -13,17 +13,17 @@ sudo su root -c 'cat sa-grader-key.json | docker login --username json_key --pas
 sudo gitlab-runner register \
   --non-interactive \
   --url "https://gitlab.com/" \
-  --registration-token "$GITLAB_REPO_RUNNER_TOKEN" \
+  --token "$GITLAB_REPO_RUNNER_TOKEN" \
   --executor "docker" \
-  --docker-image "cr.yandex/$YC_REGISTRY_ID/hse-cxx-build:latest" \
-  --tag-list ""
+  --docker-image "cr.yandex/$YC_REGISTRY_ID/hse-test-build:latest" \
+  --tag-list "grader-runner"
 
 sudo gitlab-runner register \
   --non-interactive \
   --url "https://gitlab.com/" \
-  --registration-token "$GITLAB_GROUP_RUNNER_TOKEN" \
+  --token "$GITLAB_GROUP_RUNNER_TOKEN" \
   --executor "docker" \
-  --docker-image "cr.yandex/$YC_REGISTRY_ID/hse-cxx-testenv:latest" \
-  --tag-list ""
+  --docker-image "cr.yandex/$YC_REGISTRY_ID/hse-test-testenv:latest" \
+  --tag-list "grader-runner"
 
 rm sa-grader-key.json

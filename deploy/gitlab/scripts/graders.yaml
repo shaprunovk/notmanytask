@@ -1,0 +1,39 @@
+- hosts: graders
+  tasks:
+    - name: Update apt cache and install deps
+      apt:
+        name: "{{ item }}"
+        state: latest
+        update_cache: yes
+      with_items:
+        - python3-pip
+        - python3-dev
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg
+        - lsb-release
+      become: yes
+      become_method: sudo
+    - name: Copy setup scripts
+      copy:
+        src: "{{ item }}"
+        dest: /home/{{ ansible_user }}/setup/
+      with_items:
+        - setup-common.sh
+        - setup-grader.sh
+    - name: Setup grader
+      command: /bin/bash setup-grader.sh {{ YC_REGISTRY_ID }} {{ REPO_RUNNER_TOKEN }} {{ REPO_RUNNER_TOKEN }}
+      args:
+        chdir: /home/{{ ansible_user }}/setup/
+      become: yes
+      become_method: sudo
+    - name: Register runner
+      shell: |
+        docker-compose exec -T gitea-runner gitea-runner register --non-interactive --url http://gitea.com/ --token {{ registration_token }}
+      args:
+        chdir: /home/{{ ansible_user }}/setup/
+      environment:
+        REGISTRATION_TOKEN: "{{ registration_token }}"
+      become: yes
+      become_method: sudo

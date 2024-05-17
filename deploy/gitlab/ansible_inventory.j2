@@ -1,0 +1,21 @@
+[nat]
+{{ nat_public_ip.value }}
+
+[nat:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=accept-new'
+
+[graders]
+{%- for line in graders_group_internal_ips.value %}
+{{ line -}}
+{% endfor %}
+
+[graders:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=accept-new -o ProxyCommand="ssh -o StrictHostKeyChecking=accept-new -W %h:%p -q hse@{{ nat_public_ip.value }}"'
+yc_registry_id={{ container_registry_id.value }}
+
+[builder]
+{{ builder_internal_ip.value }}
+
+[builder:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=accept-new -o ProxyCommand="ssh -o StrictHostKeyChecking=accept-new -W %h:%p -q hse@{{ nat_public_ip.value }}"'
+yc_registry_id={{ container_registry_id.value }}

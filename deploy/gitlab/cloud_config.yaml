@@ -6,5 +6,4 @@ users:
     shell: /bin/bash
     sudo: ['ALL=(ALL) NOPASSWD:ALL']
     ssh_authorized_keys:
-      - ssh-rsa ...
-      - ssh-rsa ...
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCgFNlZhhPr8v+2UNjB8FLJpPDdRen+7OqGD54hdPScLvcPSnpIU9CiEa4D0WNsCIRBJIu9BDY1WkgygxjmU86/dx27zy5pG4dRVPZrNh0UWBUfbCcyP25b3pIz9zDtS33QwXwLuaKRwAWlkJGKdvxNVkXujmxpF29g/vDkBF1qoxZEQXXi+9kfhWPhvnPGnClOSIMCH2s1LGPMeFJbg59Lgh6DTa+qRxLb9cX9/3yd1gS8MEUetY0Xybh6kejeqslY7yTrxXVnwViUQsUP0cWT/GiJt3fusGTwWCrYMgldrDssfUcZeMmOeVXvIiItcXx4h+DU3JelV05zvTDILvYkJfSzhutWzH4G8h9/Hj7O2R89suzgVvpwH+QZLeKIttcSmVsU+jm6RBfQMLT6DTTM4bBvhFvBHdKKpVhNdmMcruLDYd/rJLXgnokefulxchoI0uyR8i0GksXQZqWhuYz2DB9U6MIwaw5Z5VCchSltoq79sBPxZX3jBdbEGKVj+A0= shaprunovk@shaprunovk-os
